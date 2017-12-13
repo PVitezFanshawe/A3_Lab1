@@ -18,24 +18,24 @@ debugger
     //   console.log(error);
     // });
 
-    fetch(url)
-      .then((resp) => resp.json())
-      .then(({modelName, pricing, modelDetails, model })) => {
+    fetch(url) // this does the AJAX call
+        .then((resp) => resp.json())
+        .then(({ modelName, pricing, modelDetails, model })) => {
+              let model = document.querySelector('.modelName').textContent = modelName;
+              let price = document.querySelector('.priceInfo').innerHTML = pricing;
+              let desc = document.querySelector('.modelDetails').textContent = modelDetails;
 
-        let model = document.querySelector('.modelName').textContent = modelName;
-        let price = document.querySelector('.priceInfo').innerHTML = pricing;
-        let desc = document.querySelector('.modelDetails').textContent = modelDetails;
-
-        carButtons.forEach(function(car, index) {
-          car.classList.add('nonActive');
+              carButtons.forEach(function(car, index) {
+                car.classList.add('nonActive');
+              });
+              // the backticks are a new ES6 thing called a template string (look it up)
+              document.querySelector(`#${data.model}`).classList.remove('nonActive');
+            }
+        )
+        .catch(function(error) {
+          console.log(error);
         });
 
-        document.querySelector(`#${data.model}`).classList.remove('nonActive');
-        }
-       }
-      .catch(function(error){
-        console.log(error);
-  }
 
   carButtons.forEach(function(car, index) {
     car.addEventListener('click', getCarData, false);

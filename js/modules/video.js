@@ -26,13 +26,57 @@ var video = {
     let overlay = document.querySelector('.vid-overlay');
     overlay.classList.remove('show-overlay');
   },
+fetchVideoThumbs(){
+  //do a DB call with the fetch api
+  let url = "./includes/functions.php?getVideos=true";
 
+  fetch(url) //use the fetch api
+  .then((resp) => resp.json())//resp comes back as json, convert into plain object
+  .then((data) => {
+    video.loadVideoThumbs(data);
+    })
+  .catch(function(error){
+    console.log(error);
+  });
+},
+
+  loadVideoThumbs(data){
+  //make sure this works
+  // debugger;
+  let thumbHolder = document.querySelector('.video-thumbs');
+
+  data.forEach(thumb => {
+    let docFrag =
+    `<li class="vid-thumb" role="button" data-videopath="${thumb.path}">
+      <img src="images/${thumb.placeholder}" alt="mini commercial" class="responsive">
+    </li>`;
+
+    thumbHolder.innerHTML += docFrag;
+  });
+
+  thumbHolder.querySelectorAll('li').forEach((thumb) => thumb.addEventListener('click', video.loadNewVideo));
+},
+
+loadNewVideo(){
+  let videoPath = "video/" + this.dataset.videopath;
+
+  video.videoPlayer.src = videoPath;
+  video.videoplayer.load();
+  video.videoPlayer.play();
+
+  video.volOn();
+
+  let overlay = document.querySelector('.vid-overlay');
+  overlay.classList.remove('show-overlay');
+},
 
   init(){
     console.log('added a video module');
     video.videoPlayer.addEventListener('mouseover', video.volOn);
     video.videoPlayer.addEventListener('mouseout', video.volOff);
-    video.videoPlayer.addEventListener('ended', video.popOverlay);
+    video.videoPlayer.addEventListener('ended', video.popOverlay);0
+
+    video.fetchVideoThumbs();
   }
 }
 
